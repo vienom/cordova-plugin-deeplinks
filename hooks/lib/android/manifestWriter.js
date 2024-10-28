@@ -158,13 +158,21 @@ function isCategoriesForUniversalLinks(categories) {
  * @return {Boolean} true - if data tag for Universal Links; otherwise - false
  */
 function isDataTagForUniversalLinks(data) {
-  // can have only 1 data tag in the intent-filter
-  if (data == null || data.length != 1) {
+  // can have 1 or 2 data tags in the intent-filter
+  if (data == null || data.length > 2) {
     return false;
   }
 
-  var dataHost = data[0]['$']['android:host'];
-  var dataScheme = data[0]['$']['android:scheme'];
+  if(data.length == 1) {
+    var dataHost = data[0]['$']['android:host'];
+    var dataScheme = data[0]['$']['android:scheme'];
+  }
+
+  if(data.length == 2){
+    var dataHost = data[0]['$']['android:host'];
+    var dataScheme = data[1]['$']['android:scheme'];
+  }
+  
   var hostIsSet = dataHost != null && dataHost.length > 0;
   var schemeIsSet = dataScheme != null && dataScheme.length > 0;
 
@@ -290,8 +298,12 @@ function createIntentFilter(host, scheme, pathName) {
     }],
     'data': [{
       '$': {
-        'android:host': host,
-        'android:scheme': scheme
+        'android:host': host
+      }
+    },
+    {
+      '$': {
+        'android:scheme': scheme        
       }
     }]
   };
